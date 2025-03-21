@@ -12,32 +12,69 @@ import {
 } from "@/components/ui/carousel";
 import { DialogDemo } from "./urlForm";
 
-interface UrlItem {
-  id: number;
-  original: string;
-  short: string;
-  qrCode: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: number;
-  _count: {
-    accesses: number;
-  }
+interface GalleryItem {
+  id: string;
+  title: string;
+  summary: string;
+  url: string;
+  image: string;
 }
 
-interface GalleryProps {
+interface Gallery6Props {
   heading?: string;
-  items?: UrlItem[];
+  demoUrl?: string;
+  items?: GalleryItem[];
 }
 
 const Gallery = ({
-  heading = "My Shortened URLs",
-  items = [],
-}: GalleryProps) => {
+  heading = "Links",
+  demoUrl = "https://www.shadcnblocks.com",
+  items = [
+    {
+      id: "item-1",
+      title: "Build Modern UIs",
+      summary:
+        "Create stunning user interfaces with our comprehensive design system.",
+      url: "#",
+      image: "https://shadcnblocks.com/images/block/placeholder-dark-1.svg",
+    },
+    {
+      id: "item-2",
+      title: "Computer Vision Technology",
+      summary:
+        "Powerful image recognition and processing capabilities that allow AI systems to analyze, understand, and interpret visual information from the world.",
+      url: "#",
+      image: "https://shadcnblocks.com/images/block/placeholder-dark-1.svg",
+    },
+    {
+      id: "item-3",
+      title: "Machine Learning Automation",
+      summary:
+        "Self-improving algorithms that learn from data patterns to automate complex tasks and make intelligent decisions with minimal human intervention.",
+      url: "#",
+      image: "https://shadcnblocks.com/images/block/placeholder-dark-1.svg",
+    },
+    {
+      id: "item-4",
+      title: "Predictive Analytics",
+      summary:
+        "Advanced forecasting capabilities that analyze historical data to predict future trends and outcomes, helping businesses make data-driven decisions.",
+      url: "#",
+      image: "https://shadcnblocks.com/images/block/placeholder-dark-1.svg",
+    },
+    {
+      id: "item-5",
+      title: "Neural Network Architecture",
+      summary:
+        "Sophisticated AI models inspired by human brain structure, capable of solving complex problems through deep learning and pattern recognition.",
+      url: "#",
+      image: "https://shadcnblocks.com/images/block/placeholder-dark-1.svg",
+    },
+  ],
+}: Gallery6Props) => {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
-  
   useEffect(() => {
     if (!carouselApi) {
       return;
@@ -52,83 +89,91 @@ const Gallery = ({
       carouselApi.off("select", updateSelection);
     };
   }, [carouselApi]);
-
   return (
-    <div className="w-full space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h2 className="text-2xl font-bold tracking-tight">{heading}</h2>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              carouselApi?.scrollPrev();
-            }}
-            disabled={!canScrollPrev}
-            className="disabled:pointer-events-auto"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              carouselApi?.scrollNext();
-            }}
-            disabled={!canScrollNext}
-            className="disabled:pointer-events-auto"
-          >
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+    <section className="py-32">
+      <div className="container">
+        <div className="mb-8 flex flex-col justify-between md:mb-14 md:flex-row md:items-end lg:mb-16">
+          <div>
+            <h2 className="mb-3 text-3xl font-semibold md:mb-4 md:text-4xl lg:mb-6">
+              {heading}
+            </h2>
+            <DialogDemo></DialogDemo>
+          </div>
+          <div className="mt-8 flex shrink-0 items-center justify-start gap-2">
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => {
+                carouselApi?.scrollPrev();
+              }}
+              disabled={!canScrollPrev}
+              className="disabled:pointer-events-auto"
+            >
+              <ArrowLeft className="size-5" />
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => {
+                carouselApi?.scrollNext();
+              }}
+              disabled={!canScrollNext}
+              className="disabled:pointer-events-auto"
+            >
+              <ArrowRight className="size-5" />
+            </Button>
+          </div>
         </div>
       </div>
-
-      <Carousel
-        setApi={setCarouselApi}
-        className="w-full"
-      >
-        <CarouselContent className="-ml-4">
-          {items.map((item) => (
-            <CarouselItem key={item.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-              <div className="overflow-hidden rounded-xl border bg-background p-4">
-                <div className="flex flex-col gap-4">
-                  <div className="aspect-[4/3] overflow-hidden rounded-lg">
-                    <div className="h-full w-full flex items-center justify-center">
-                      <img
-                        src={item.qrCode}
-                        alt={`QR Code for ${item.short}`}
-                        className="h-full w-full object-contain"
-                      />
+      <div className="w-full">
+        <Carousel
+          setApi={setCarouselApi}
+          opts={{
+            breakpoints: {
+              "(max-width: 768px)": {
+                dragFree: true,
+              },
+            },
+          }}
+          className="relative left-[-1rem]"
+        >
+          <CarouselContent className="-mr-4 ml-8 2xl:mr-[max(0rem,calc(50vw-700px-1rem))] 2xl:ml-[max(8rem,calc(50vw-700px+1rem))]">
+            {items.map((item) => (
+              <CarouselItem key={item.id} className="pl-4 md:max-w-[452px]">
+                <a
+                  href={item.url}
+                  className="group flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex aspect-[3/2] overflow-clip rounded-xl">
+                      <div className="flex-1">
+                        <div className="relative h-full w-full origin-bottom transition duration-300 group-hover:scale-105">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="h-full w-full object-cover object-center"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="space-y-2">
-                    <h3 className="font-semibold">{item.short}</h3>
+                  <div className="mb-2 line-clamp-3 pt-4 text-lg font-medium break-words md:mb-3 md:pt-4 md:text-xl lg:pt-4 lg:text-2xl">
+                    {item.title}
                   </div>
-
-                  <div className="text-sm text-muted-foreground">
-                    Accessed {item._count.accesses} times
+                  <div className="mb-8 line-clamp-2 text-sm text-muted-foreground md:mb-12 md:text-base lg:mb-9">
+                    {item.summary}
                   </div>
-
-                  <div>
-                    <a
-                      href={item.original}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm font-medium"
-                    >
-                      Visit original URL <ArrowUpRight className="h-3 w-3" />
-                    </a>
+                  <div className="flex items-center text-sm">
+                    Read more{" "}
+                    <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
                   </div>
-                </div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
-    </div>
+                </a>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
+    </section>
   );
 };
 
