@@ -7,6 +7,15 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    origin: 'http://localhost:3000',  // Seu frontend
+    methods: 'GET, POST, PUT, DELETE', // Métodos permitidos
+    allowedHeaders: 'Content-Type, Authorization', // Cabeçalhos permitidos
+    credentials: true, // Incluir cookies
+  });
+
+  app.setGlobalPrefix('api');
+
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
 
@@ -18,6 +27,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(3000);
+  await app.listen(8000);
 }
 bootstrap();

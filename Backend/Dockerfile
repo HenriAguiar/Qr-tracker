@@ -1,19 +1,16 @@
-# Use uma imagem do Node compatível com Prisma (>=18.18)
-FROM node:18-alpine
-
-# Define o diretório de trabalho
+FROM node:20-alpine
 WORKDIR /app
-
-# Copia os arquivos de package e instala as dependências
+# Copia os arquivos de dependência e o .env
 COPY package*.json ./
+COPY .env ./
+# Copia a pasta prisma (onde está o schema)
+COPY prisma ./prisma
+# Instala as dependências
 RUN npm install
-
-# Copia o restante do código e realiza o build
+# Copia o restante dos arquivos
 COPY . .
+# Realiza o build da aplicação
 RUN npm run build
-
-# Expõe a porta que sua aplicação usa (ex: 8000)
 EXPOSE 8000
-
-# Comando para iniciar a aplicação
-CMD ["node", "dist/main.js"]
+# Run migrations at startup and then start the app
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy --schema=./prisma/schema.prisma && npm start"]
