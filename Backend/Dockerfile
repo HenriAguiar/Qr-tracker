@@ -1,9 +1,19 @@
-FROM python:3.9
+# Use uma imagem do Node compatível com Prisma (>=18.18)
+FROM node:18-alpine
 
+# Define o diretório de trabalho
 WORKDIR /app
 
-RUN pip install flask redis
+# Copia os arquivos de package e instala as dependências
+COPY package*.json ./
+RUN npm install
 
-COPY app.py /app/
+# Copia o restante do código e realiza o build
+COPY . .
+RUN npm run build
 
-CMD ["python", "app.py"]
+# Expõe a porta que sua aplicação usa (ex: 8000)
+EXPOSE 8000
+
+# Comando para iniciar a aplicação
+CMD ["node", "dist/main.js"]
