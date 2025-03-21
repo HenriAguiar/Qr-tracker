@@ -50,7 +50,7 @@ const Signup1 = ({
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/user/register", // Ajuste aqui a URL do backend
+        "http://localhost/api/user/register", // Ajuste aqui a URL do backend
         userData
       );
 

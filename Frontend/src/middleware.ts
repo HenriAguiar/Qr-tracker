@@ -7,7 +7,7 @@ const publicRoutes = [
 ];
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value; // Obtém o token do cookie (se existir)
+  const token = req.cookies.get("access_token")?.value; // Obtém o token do cookie (se existir)
   const currentPath = req.nextUrl.pathname; // Obtém o caminho da URL atual
 
   // Verifica se a rota atual está na lista de rotas públicas

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Para navegação
-import axios from "axios"; // Importando o Axios
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -34,11 +34,14 @@ const Login3 = ({
 }: Login3Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null); // Para mensagens de erro
-  const router = useRouter(); // Para navegação para a página home
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
     const userData = {
       email,
@@ -47,19 +50,22 @@ const Login3 = ({
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/auth/login", // URL do backend
+        "http://localhost/api/auth/login",
         userData,
-        { withCredentials: true } // Incluir cookies (tokens)
+        { withCredentials: true }
       );
 
-      if (response.status === 200) {
+      // Check for both 200 and 201 status codes as success
+      if (response.status === 200 || response.status === 201) {
         console.log("Login bem-sucedido", response.data);
-        // Redireciona para a página /home após o login bem-sucedido
+        // Redirect to home page
         router.push("/home");
       }
     } catch (error: any) {
       setError("Credenciais inválidas ou erro ao fazer login. Tente novamente.");
       console.error("Erro ao fazer login", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -82,7 +88,8 @@ const Login3 = ({
                   placeholder="Enter your email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)} // Armazenando o email no estado
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                 />
                 <div>
                   <Input
@@ -90,16 +97,16 @@ const Login3 = ({
                     placeholder="Enter your password"
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)} // Armazenando a senha no estado
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
-                <Button type="submit" className="mt-2 w-full">
-                  {loginText}
+                <Button type="submit" className="mt-2 w-full" disabled={isLoading}>
+                  {isLoading ? "Logging in..." : loginText}
                 </Button>
               </div>
             </form>
 
-            {/* Exibir mensagens de erro */}
             {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
 
             <div className="mx-auto mt-8 flex justify-center gap-1 text-sm text-muted-foreground">
