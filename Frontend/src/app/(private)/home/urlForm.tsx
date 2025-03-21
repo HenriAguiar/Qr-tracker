@@ -87,7 +87,7 @@ export function DialogDemo() {
       // Handle success
       if (response.status === 201) {
         // Using alert instead of toast
-        alert(`QR code criado com sucesso! URL encurtada: ${response.data.shortUrl || formData.slug}`);
+        alert(`QR code criado com sucesso!`);
         setOpen(false); // Close dialog on success
         
         // Reset form
